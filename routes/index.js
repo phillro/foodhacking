@@ -1,8 +1,9 @@
-
 /*
  * GET home page.
  */
 
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' })
+exports.index = function (req, res) {
+    req.models.Example.find({}, function (err, docs) {
+      res.send(docs);
+    })
 };

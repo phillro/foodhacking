@@ -10,7 +10,7 @@
         "database":""
     },
 
-    "elastic_search":{
+    "elasticsearch":{
         "host":"elastics.ordr.in",
         "port":9200
     },
