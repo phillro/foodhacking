@@ -1,0 +1,15 @@
+{
+  "author": "Ricky/Luis/Phill/Felix",
+  "name": "fhack",
+  "description": "Ordr.in Food Hack",
+  "version": "0.0.0",
+  "repository": {
+    "url": "https://github.com/phillro/foodhacking"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
