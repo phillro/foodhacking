@@ -1,0 +1,41 @@
+{
+    "server":{
+        "port":3000,
+        "host":null
+    },
+
+    "db":{
+        "user":"",
+        "password":"",
+        "database":""
+    },
+
+    "elastic_search":{
+        "host":"elastics.ordr.in",
+        "port":9200
+    },
+    "indexname":"foodhack",
+    "venue_type_name":"foodhack_venue",
+
+    "mongo":{
+        "user":"foodhack",
+        "password":"foodhack",
+        "dbName":"foodhack",
+        "port":27017,
+        "host":"ec2-23-20-56-175.compute-1.amazonaws.com",
+        "model_collection_mapping":{
+        }
+    },
+
+    "redis":{
+      "port":6379,
+      "host":"ec2-23-20-56-175.compute-1.amazonaws.com",
+      "db":"foodhack",
+      "debug":true
+    }
+
+
+
+
+
+}

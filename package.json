@@ -1,15 +1,20 @@
 {
-  "author": "Ricky/Luis/Phill/Felix",
-  "name": "fhack",
-  "description": "Ordr.in Food Hack",
-  "version": "0.0.0",
-  "repository": {
-    "url": "https://github.com/phillro/foodhacking"
-  },
-  "dependencies": {},
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
+    "name": "application-name"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+    , "jade": ">= 0.0.1"
+    , "async": ">= 0.0.1"
+    , "mongoose": "<3"
+    , "elasticsearchclient": ">= 0.0.1"
+    , "nconf":">0.0.1"
+    , "redis":">0.0.1"
+    , "extend":">0.0.1"
+    , "node-imagemagick": "git://github.com/jteplitz602/node-imagemagick.git"
+    , "underscore":">0.0.1"
+    , "mongodb":">0.0.1"
+    , "connect":">0.0.1"
+    , "connect-redis":">0.0.1"
   }
 }
