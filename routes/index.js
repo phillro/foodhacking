@@ -19,9 +19,7 @@
   };
 
   exports.home = function (req, res, next) {
-    if (!req.session.user) {
-      res.redirect("/");
-    }
+    
     api.internal.getCards(req, function (err, cards) {
       if (err) {
         console.log(err);
