@@ -84,5 +84,4 @@ function buildDbString(user, pass, host, port, dbName) {
     + ':' + port
     + '/' + dbName;
   return connectionString
-
 }

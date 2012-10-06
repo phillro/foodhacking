@@ -35,6 +35,7 @@
     }
     "foursquare": {
       "key": "",
-      "secret": ""
+      "secret": "",
+      "redirect_url": "http://localhost:3000/fs/callback"
     }
 }
