@@ -7,7 +7,7 @@
 var indexRoutes = require('./index.js');
 var userRoutes  = require("./user.js");
 var apiRoutes = require('./api.js');
-var adminRoutes = require('./admin.js');
+
 
 module.exports = function(app){
 
