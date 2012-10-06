@@ -1,6 +1,12 @@
 <script src="/javascripts/home.js"></script>
 <link rel="stylesheet" href="/stylesheets/home.css" />
 
+<script type="text/x-jquery-tmpl" id="restaurantTemplate">
+  <li class="restaurant">
+    <h3>{{restaurantName}}</h3>
+  </li>
+</script>
+
 <div class="content-primary">
   <ul id="cards" data-role="listview">
     <li data-role="list-divider">Your cards (tap to punch)<span class="ui-li-count">{{cards.length}}</span></li>

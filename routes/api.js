@@ -5,6 +5,7 @@
  */
 var async = require('async'),
   util = require('util'),
+  _    = require("underscore"),
   fs = require('fs');
 
 function ApiResponse(res) {
@@ -105,8 +106,16 @@ exports.clipCard = function (req, res) {
         } else {
           cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
         }
+      },
+      function updateUser(card, cb){
+        var user = req.session.user;
+        if (!_.isNUmber(user.points)){
+          user.points = 0;
+        }
+        user.points += 5;
+        user.save(cb)
       }
-    ], function (waterfallError, card, msg) {
+    ], function (waterfallError, user, msg) {
       if (waterfallError) {
         out.err = waterfallError
       } else {

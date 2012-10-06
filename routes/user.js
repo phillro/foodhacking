@@ -24,7 +24,7 @@
       }
 
       req.session.user = user;
-      res.send("hello " + user.first_name);
+      res.redirect("/home");
     });
   };
 

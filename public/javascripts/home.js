@@ -23,7 +23,7 @@
   };
 
   showRestaurants = function(data){
-    data = JSON.parse(data);
+    data = JSON.parse(data).results;
 
     console.log(data[0]);
   };

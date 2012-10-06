@@ -35,7 +35,8 @@
 
       async.parallel(parallel_arr, function(err, cards){
         var params = {
-          cards: cards
+          cards: cards,
+          user: req.session.user
         };
         res.render("home", params);
       });
