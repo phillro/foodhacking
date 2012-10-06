@@ -64,6 +64,9 @@ app.all('*', function (req, res, next) {
   req.redisClient = redisClient;
   req.models = mongooseLayer.models;
   req.elasticSearchClient = elasticSearchCilent;
+  req.indexName = nconf.get('indexname');
+  req.indexTypeName = nconf.get('venue_type_name');
+
   next()
 })
 

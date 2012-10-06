@@ -112,14 +112,16 @@ exports.clipCard = function (req, res) {
 
 exports.showRestaurant = function (req, res) {
   var out = new ApiResponse(res)
-  req.models.Card.findById(req.params.id, function (err, card) {
-    if (err) {
-      out.error = err
-    } else {
-      out.results.push(card);
-    }
-    out.send();
-  })
+
+  req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)
+    .data(function(data){
+      out.reults=JSON.parse(dataString);
+      out.send();
+    })
+    .error(function(err){
+      out.err=err;
+      out.send();
+    })
 }
 
 /*
