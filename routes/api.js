@@ -70,6 +70,9 @@ exports.internal = {
         return cb(false, card);
       }
     })
+  },
+  getBounty: function(req,bountyId, cb){
+    req.models.Bounty.findById(bountyId, cb);
   }
 };
 
@@ -102,20 +105,6 @@ exports.showRestaurant = function (req, res) {
 }
 
 
-exports.showBounty = function (req, res) {
-  var out = new ApiResponse(res);
-
-  var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)
-  getCmd.on('data', function (data) {
-    out.results.push(JSON.parse(data)._source);
-    out.send();
-  })
-    .on('error', function (err) {
-      out.err = err;
-      out.send();
-    })
-    .exec();
-}
 
 exports.nearRestaurant = function (req, res) {
   var out = new ApiResponse(res)
