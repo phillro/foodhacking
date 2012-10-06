@@ -101,6 +101,9 @@
             cb(err, saveResult)
           });
         },
+        function (card, cb){
+          getRestaurant(req, card)(cb);
+        },
         function updateUser(card, callback) {
           var user = req.session.user;
           if (!_.isNumber(user.points)) {
@@ -119,20 +122,26 @@
           if(card.clipCount>=card.clipsRequired){
             res.redirect('/punch/'+card._id+'/success');
           }else{
-            res.render('punchpages', {user:user, card:card, punched:true});
-          }
-          for (var i = 0; i < (card.clipsRequired - card.clipCount) - 1; i++){
-            card.clips.push({
-              image: "/images/punch.png"
-            });
-          }
-          if (card.clipsRequired !== card.clipCount){
-            card.clips[9] = {
-              image: "/images/free.png"
+            console.log("card", card);
+            var params = {
+              user:req.session.user,
+              pageTitle: card.restaurantName,
+              card: card,
+              punched: true
             };
+            for (var i = 0; i < (parseInt(card.clipsRequired, 10) - parseInt(card.clipCount, 10)) - 1; i++){
+              card.clips.push({
+                image: "/images/punch.png"
+              });
+            }
+            if (card.clipsRequired !== card.clipCount){
+              card.clips[9] = {
+                image: "/images/free.png"
+              };
+            }
+            card.clipsRemaining = parseInt(card.clipsRequired, 10) - parseInt(card.clipCount, 10);
+            return res.render('punchpage', params);
           }
-          card.clipsRemaining = card.clipsRequired - card.clipCount;
-          res.render('punchpage', {user:user, card:card, punched:punched})
         }
       })
     }
