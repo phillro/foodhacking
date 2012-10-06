@@ -11,6 +11,7 @@ var apiRoutes = require('./api.js');
 module.exports = function(app){
 
   app.get('/', indexRoutes.index);
+  app.get("/home", indexRoutes.home);
 
   app.get("/login", userRoutes.login);
   app.get("/fs/callback", userRoutes.foursquareCallback);
@@ -24,8 +25,4 @@ module.exports = function(app){
   app.get('/card',apiRoutes.listCards);
   app.get('/card/:id',apiRoutes.showCard);
   app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
-
 }
-
-
-
