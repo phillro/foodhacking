@@ -115,19 +115,18 @@ exports.nearRestaurant = function (req, res) {
   var skip = req.query.skip || 0;
   var geo = [parseFloat(lat),parseFloat(lon)];
   req.models.Card.find({userIds: req.session.user._id}, function(err, cards){
-    var bountyIds = [];
+    var bountyIds = {};
     for (var i = 0; i < cards.length; i++){
-      bountyIds.push(String(cards[i]._id));
+      bountyIds[String(cards[i].bountyId)] = true;
     }
+    console.log("bounties", bountyIds);
     req.models.Bounty.find({geo:{$near:geo}}, function (err, bounties) {
       if(err){
         console.log(err);
         out.error=err
       }else{
         for (var i = 0; i < bounties.length; i++) {
-          //var bounty = bounties[i];
-          console.log("checking", String(bounties[i]._doc._id));
-          if (!_.contains(bountyIds, String(bounties[i]._doc._id))){
+          if (_.isUndefined(bountyIds[String(bounties[i]._doc._id)])){
             out.results.push(bounties[i]._doc);
           }
         }
