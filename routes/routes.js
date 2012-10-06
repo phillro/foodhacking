@@ -10,10 +10,10 @@ var apiRoutes = require('./api.js');
 
 module.exports = function(app){
 
-
-
   app.get('/', indexRoutes.index);
+
   app.get("/setup", userRoutes.setup);
+  app.get("/fs/callback", userRoutes.foursquareCallback);
 
 
 
