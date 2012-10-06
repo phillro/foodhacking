@@ -3,7 +3,10 @@
 
 <script type="text/x-jquery-tmpl" id="restaurantTemplate">
   <li class="restaurant">
-    <h3>{{restaurantName}}</h3>
+    <a href="/card/create/${_id}" data-transition="slide">
+      <h3>${data.name}</h3>
+      <p>Get ${description} when after you and your friends go here 10 times</p>
+    </a>
   </li>
 </script>
 
@@ -12,7 +15,7 @@
     <li data-role="list-divider">Your cards (tap to punch)<span class="ui-li-count">{{cards.length}}</span></li>
     {{#each cards}}
       <li class="card">
-        <a href="/punch/{{_id}}">
+        <a href="/punch/{{_id}}" data-transition="slide">
           <h3 class="rName">{{restaurantName}}</h2>
           <p class="">{{description}}</p>
         </a>
@@ -20,6 +23,6 @@
     {{/each}}
   </ul>
   <ul id="restaurants" data-role="listview">
-    <li data-role="list-divider">Restaurants near you <span class="ui-li-count"></span></li>
+    <li data-role="list-divider">Restaurants near you <span class="ui-li-count" id="bountyCount"></span></li>
   </ul>
 </div>

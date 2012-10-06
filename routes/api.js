@@ -163,6 +163,7 @@ exports.nearRestaurant = function (req, res) {
   var geo = [parseFloat(lat),parseFloat(lon)];
   req.models.Bounty.find({geo:{$near:geo}}, function (err, bounties) {
     if(err){
+      console.log(err);
       out.error=err
     }else{
       for (var i = 0; i < bounties.length; i++) {
