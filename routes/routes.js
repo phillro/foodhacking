@@ -25,4 +25,7 @@ module.exports = function(app){
   app.get('/card',apiRoutes.listCards);
   app.get('/card/:id',apiRoutes.showCard);
   app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
+
+  app.get('/restaurant/:id',apiRoutes.showRestaurant);
+  app.get('/restaurant/:lat/:lon',apiRoutes.nearRestaurant);
 }

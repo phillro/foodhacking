@@ -23,7 +23,6 @@ ApiResponse.prototype.send = function () {
   this.res.send(JSON.stringify(out));
 }
 
-
 exports.listCards = function (req, res) {
 
   var out = new ApiResponse(res)
@@ -40,6 +39,26 @@ exports.listCards = function (req, res) {
   })
 }
 
+exports.internal = {
+  getCards: function(req, cb){
+    req.models.Card.find({}, cb);
+  },
+  getRestaurant: function(req, id, cb){
+    console.log("getting restaurant", req.indexName, id);
+    var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, id);
+
+    getCmd.on('data', function (data) {
+      console.log("data");
+      cb(false, JSON.parse(data)._source);
+    })
+      .on('error', function (err) {
+        console.log("error");
+        cb(err);
+      })
+    .exec();
+  }
+};
+
 exports.showCard = function (req, res) {
   var out = new ApiResponse(res)
   req.models.Card.findById(req.params.id, function (err, card) {
@@ -52,31 +71,30 @@ exports.showCard = function (req, res) {
   })
 }
 
-
 exports.clipCard = function (req, res) {
   var out = new ApiResponse(res)
-  async.waterfall ([
-    function getCard(cb){
+  async.waterfall([
+    function getCard(cb) {
       req.models.Card.findById(req.params.id, function (err, card) {
         cb(err, card)
       })
     } ,
-    function updateCard(card, cb){
+    function updateCard(card, cb) {
       var clip = {};
       card.clipCount++;
       card.save(cb);
     },
-    function checkCardCount(card, cb){
-      if(card.clipCount==card.clipsRequired){
+    function checkCardCount(card, cb) {
+      if (card.clipCount == card.clipsRequired) {
         //Do something cause the bounty requirement is met
-      }else{
-        cb(undefined, card, card.clipsRequired-card.clipCount+ ' clips left to go!')
+      } else {
+        cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
       }
     }
-  ],function(waterfallError, card, msg){
-    if(waterfallError){
-      out.err=waterfallError
-    }else{
+  ], function (waterfallError, card, msg) {
+    if (waterfallError) {
+      out.err = waterfallError
+    } else {
       out.msg = msg
     }
     out.send();
@@ -84,20 +102,84 @@ exports.clipCard = function (req, res) {
 }
 
 exports.showRestaurant = function (req, res) {
-  var out = new ApiResponse(res)
-  req.models.Card.findById(req.params.id, function (err, card) {
-    if (err) {
-      out.error = err
-    } else {
-      out.results.push(card);
-    }
+  var out = new ApiResponse(res);
+
+  var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)
+  getCmd.on('data', function (data) {
+    out.results.push(JSON.parse(data)._source);
     out.send();
   })
+    .on('error', function (err) {
+      out.err = err;
+      out.send();
+    })
+    .exec();
+}
+
+exports.nearRestaurant = function (req, res) {
+  var out = new ApiResponse(res)
+  var lat = req.params.lat;
+  var lon = req.params.lon;
+  var limit = req.query.limit || 10;
+  var skip = req.query.skip || 0;
+  var maxDistance = 100;
+  var qryObj = {
+    "query":{
+      "custom_score":{
+        "query":{
+          "filtered":{
+            "query":{},
+            "filter":{
+              "geo_distance":{
+                "geo":{
+                  "lat":lonlatstr.split(',')[1],
+                  "lon":lonlatstr.split(',')[0]
+                },
+                "distance":maxDistance
+              }
+            }
+
+          }
+        },
+        "params":{
+          "lat":lat,
+          "lon":lon,
+          "maxDistance":parseFloat(distance),
+          "distanceWeight":1,
+          "scoreWeight":0
+
+        },
+        "script":'(1-(doc["geo"].distanceInKm(lat,lon)/maxDistance))*distanceWeight+scoreWeight*_score'
+      }
+    },
+    "script_fields":{
+      "distance":{
+        "params":{
+          "lat":lat,
+          "lon":lon
+        },
+        "script":'doc["geo"].distanceInKm(lat,lon)'
+      }
+    },
+    "from":skip,
+    "size":limit
+  }
+
+  var getCmd = req.elasticSearchClient.search(req.indexName, req.indexTypeName, req.params.id, qryObj)
+  getCmd.on('data', function (data) {
+    out.results.push(JSON.parse(data)._source);
+    out.send();
+  })
+    .on('error', function (err) {
+      out.err = err;
+      out.send();
+    })
+    .exec();
 }
 
 /*
 
-  app.get('/card',apiRoutes.listCards);
-  app.get('/card/:id',apiRoutes.showCard);
-  app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
-*/
+ app.get('/card',apiRoutes.listCards);
+ app.get('/card/:id',apiRoutes.showCard);
+ app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
+ */
