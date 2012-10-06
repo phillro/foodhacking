@@ -52,7 +52,8 @@
         var params = {
           user:req.session.user,
           pageTitle:card.restaurantName,
-          card:card
+          card:card,
+          punched: false
         };
         for (var i = 0; i < (card.clipsRequired - card.clipCount) - 1; i++){
           card.clips.push({
