@@ -152,8 +152,8 @@ exports.nearRestaurant = function (req, res) {
           "lat":lat,
           "lon":lon,
           "maxDistance":parseFloat(distance),
-          "distanceWeight":defaultParams.distanceWeight,
-          "scoreWeight":defaultParams.scoreWeight
+          "distanceWeight":1,
+          "scoreWeight":0
 
         },
         "script":'(1-(doc["geo"].distanceInKm(lat,lon)/maxDistance))*distanceWeight+scoreWeight*_score'
