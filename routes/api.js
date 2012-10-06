@@ -114,18 +114,26 @@ exports.nearRestaurant = function (req, res) {
   var limit = req.query.limit || 10;
   var skip = req.query.skip || 0;
   var geo = [parseFloat(lat),parseFloat(lon)];
-  req.models.Bounty.find({geo:{$near:geo}}, function (err, bounties) {
-    if(err){
-      console.log(err);
-      out.error=err
-    }else{
-      for (var i = 0; i < bounties.length; i++) {
-        //var bounty = bounties[i];
-        out.results.push(bounties[i]._doc);
-      }
+  req.models.Card.find({userIds: req.session.user._id}, function(err, cards){
+    var bountyIds = {};
+    for (var i = 0; i < cards.length; i++){
+      bountyIds[String(cards[i].bountyId)] = true;
     }
-    out.send();
-  })
+    console.log("bounties", bountyIds);
+    req.models.Bounty.find({geo:{$near:geo}}, function (err, bounties) {
+      if(err){
+        console.log(err);
+        out.error=err
+      }else{
+        for (var i = 0; i < bounties.length; i++) {
+          if (_.isUndefined(bountyIds[String(bounties[i]._doc._id)])){
+            out.results.push(bounties[i]._doc);
+          }
+        }
+      }
+      out.send();
+    });
+  });
 }
 /*
 

@@ -109,6 +109,11 @@
             cb(err, card, bounty)
           })
         },
+        function (card, bounty, cb){
+          getRestaurant(req, card)(function(err, card){
+            cb(err, card, bounty);
+          });
+        },
         function updateUser(card, bounty, callback) {
           var user = req.session.user;
           if (!_.isNumber(user.points)) {
@@ -122,15 +127,34 @@
       ], function (waterfallError, user, card, bounty) {
         if (waterfallError) {
           console.log(waterfallError)
-        } else {
-          var punched = false;
-          if (card.clipCount >= card.clipsRequired) {
-            res.redirect('/punch/' + card._id + '/success');
-          } else {
-            res.render('punchpage', {user:user, card:card, punched:true, bounty:bounty});
+
+        }else{
+          var punched=false;
+          if(card.clipCount>=card.clipsRequired){
+            res.redirect('/punch/'+card._id+'/success');
+          }else{
+            console.log("card", card);
+            var params = {
+              user:req.session.user,
+              pageTitle: card.restaurantName,
+              card: card,
+              bounty:bounty,
+              punched: true
+            };
+            for (var i = 0; i < (parseInt(card.clipsRequired, 10) - parseInt(card.clipCount, 10)) - 1; i++){
+              card.clips.push({
+                image: "/images/punch.png"
+              });
+            }
+            if (card.clipsRequired !== card.clipCount){
+              card.clips[9] = {
+                image: "/images/free.png"
+              };
+            }
+            card.clipsRemaining = parseInt(card.clipsRequired, 10) - parseInt(card.clipCount, 10);
+            return res.render('punchpage', params);
           }
         }
-
       })
     }
   }
