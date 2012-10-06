@@ -20,6 +20,10 @@
     }, cb);
   };
 
+  exports.getUserInfo = function(token, cb){
+    Foursquare.Users.getUser("self", token, cb);
+  };
+
   exports.checkin = function(){
   };
 }());
