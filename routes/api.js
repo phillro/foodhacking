@@ -166,8 +166,8 @@ exports.nearRestaurant = function (req, res) {
       out.error=err
     }else{
       for (var i = 0; i < bounties.length; i++) {
-        var bounty = bounties[i];
-        out.results.push(bounty.data);
+        //var bounty = bounties[i];
+        out.results.push(bounties[i]._doc);
       }
     }
     out.send();
