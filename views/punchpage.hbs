@@ -1,10 +1,11 @@
 <script type="text/javascript" src="/javascripts/punchpage.js"></script>
-<h3>Photos</h3>
+<h3>Punchout {{bounty.data.name}}</h3>
 <div class="gallery">
   {{#if punched}}
     <p>Thanks for punching in, you need {{card.clipsRemaining}} more punches</p>
   {{else}}
-    <p>You need {{card.clipsRemaining}} more punches</p>
+    <p>You need {{card.clipsRemaining}} more punches to earn <span style="font-weight:bolder;">{{bounty.description}}</span> at {{bounty.data.name}}</p>
+    <p>{{bounty.data.address}} {{bounty.data.city}}, {{bounty.data.state}}</p>
   {{/if}}
   {{#each card.clips}}
     <img src="{{image}}" width="100" />
@@ -24,5 +25,3 @@
 {{#if punched}}
   <a data-role="button" href="/home">See my other cards</a>
 {{/if}}
-
-{{card._id}}
