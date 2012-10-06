@@ -11,7 +11,7 @@
     },
 
     "elasticsearch":{
-        "host":"ec2-23-22-231-160.compute-1.amazonaws.com:",
+        "host":"ec2-23-22-231-160.compute-1.amazonaws.com",
         "port":9200
     },
     "indexname":"skyfetch4",
