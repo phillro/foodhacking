@@ -4,7 +4,8 @@
   , "private": true
   , "dependencies": {
       "express": "2.5.8"
-    , "jade": ">= 0.0.1"
+    , "jade" ">= 0.0.1"
+    , "hbs":  ">= 0.0.1"
     , "async": ">= 0.0.1"
     , "mongoose": "<3"
     , "elasticsearchclient": ">= 0.0.1"

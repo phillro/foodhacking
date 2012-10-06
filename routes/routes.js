@@ -17,7 +17,13 @@ module.exports = function(app){
 
 
 
-  app.get('/bounties',indexRoutes.showBounties);
+  app.get('/bounties',apiRoutes.listBounties);
+  app.get('/bounties/:id',apiRoutes.showBounty);
+
+
+  app.get('/card',apiRoutes.listCards);
+  app.get('/card/:id',apiRoutes.showCard);
+  app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
 
 }
 

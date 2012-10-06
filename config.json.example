@@ -5,9 +5,9 @@
     },
 
     "db":{
-        "user":"",
-        "password":"",
-        "database":""
+        "user":"foodhack",
+        "password":"foodhack",
+        "database":"foodhack"
     },
 
     "elasticsearch":{
