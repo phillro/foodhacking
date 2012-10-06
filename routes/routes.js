@@ -22,9 +22,10 @@ module.exports = function(app){
 
 
   app.get('/bounties',apiRoutes.listBounties);
-  app.get('/bounties/:id',apiRoutes.showBounty);
+  app.get('/bounties/:bid',apiRoutes.showBounty);
 
 
+  app.get("/card/create/:bid", index.createCard);
   app.get('/card',apiRoutes.listCards);
   app.get('/card/:id',apiRoutes.showCard);
   app.post('/card/:id/clip/:userId',apiRoutes.clipCard);

@@ -28,7 +28,6 @@
 
   showRestaurants = function(data){
     data = JSON.parse(data).results;
-    console.log(data[0]);
     $("#restaurantTemplate").tmpl(data).appendTo("#restaurants");
     $("#restaurants").listview("refresh");
     $("#bountyCount").text(data.length);
