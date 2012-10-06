@@ -79,8 +79,8 @@ exports.clipCard = function (req, res) {
   var out = new ApiResponse(res)
 
   var imageFile = false;
-  if (req.files && req.files.file) {
-    imageFile = req.files.file.replace(req.imageUploadPath)
+  if (req.files && req.files.photo) {
+    imageFile = req.files.photo.replace(req.imageUploadPath,'')
   }
   if (!imageFile) {
     out.error = "Image is required for a card clip."
