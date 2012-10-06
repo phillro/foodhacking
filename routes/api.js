@@ -85,60 +85,24 @@ exports.showCard = function (req, res) {
   })
 }
 
-exports.clipCard = function (req, res) {
-  var out = new ApiResponse(res)
-
-  var imageFile = false;
-  if (req.files && req.files.photo) {
-    imageFile = '/public/upload/' + req.files.photo.path.replace(/^.*[\\\/]/, '');
-  }
-  if (!imageFile) {
-    out.error = "Image is required for a card clip."
-  } else {
-
-    async.waterfall([
-      function getCard(cb) {
-        req.models.Card.findById(req.params.id, function (err, card) {
-          cb(err, card)
-        })
-      } ,
-      function updateCard(card, cb) {
-        console.log("updating card");
-        var clip = {};
-        clip.image = imageFile;
-        clip.userId = req.params.userId
-        card.clips.push(clip);
-        card.clipCount++;
-        card.save(cb);
-      },
-      function checkCardCount(card, cb) {
-        if (card.clipCount == card.clipsRequired) {
-          //Do something cause the bounty requirement is met
-        } else {
-          cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
-        }
-      },
-      function updateUser(card, cb){
-        var user = req.session.user;
-        if (!_.isNUmber(user.points)){
-          user.points = 0;
-        }
-        user.points += 5;
-        user.save(cb)
-      }
-    ], function (waterfallError, user, msg) {
-      if (waterfallError) {
-        out.err = waterfallError
-      } else {
-        out.msg = msg
-      }
-      out.send();
-    })
-  }
-
-}
 
 exports.showRestaurant = function (req, res) {
+  var out = new ApiResponse(res);
+
+  var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)
+  getCmd.on('data', function (data) {
+    out.results.push(JSON.parse(data)._source);
+    out.send();
+  })
+    .on('error', function (err) {
+      out.err = err;
+      out.send();
+    })
+    .exec();
+}
+
+
+exports.showBounty = function (req, res) {
   var out = new ApiResponse(res);
 
   var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)

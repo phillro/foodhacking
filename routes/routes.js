@@ -15,6 +15,7 @@ module.exports = function(app){
   app.get("/home", indexRoutes.home);
 
   app.get("/punch/:card", indexRoutes.card);
+  app.post('/punch/:id/clip/:userId',indexRoutes.clipCard);
 
   app.get("/login", userRoutes.login);
   app.get("/fs/callback", userRoutes.foursquareCallback);
@@ -27,7 +28,7 @@ module.exports = function(app){
 
   app.get('/card',apiRoutes.listCards);
   app.get('/card/:id',apiRoutes.showCard);
-  app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
+
 
   app.get('/restaurant/:id',apiRoutes.showRestaurant);
   app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
