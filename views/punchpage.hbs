@@ -2,15 +2,14 @@
 <h3>Photos</h3>
 <div class="gallery">
   {{#if punched}}
-    <p>You need {{card.clipsRequired - card.clipCount}} more punches</p>
+    <p>Thanks for punching in, you need {{card.clipsRemaining}} more punches</p>
   {{else}}
-    <p>Thanks for punching in, you need {{card.clipsRequired - card.clipCount}} more punches</p>
+    <p>You need {{card.clipsRemaining}} more punches</p>
   {{/if}}
   {{#each card.clips}}
     <img src="{{image}}" width="100" />
   {{/each}}
 </div>
-
 
 {{#unless punched}}
   <form id="submitPhoto" method="POST" name="punchform" enctype="multipart/form-data" action="/punch/{{card._id}}/clip/{{user._id}}">
@@ -21,3 +20,5 @@
     </div>
   </form>
 {{/unless}}
+
+{{card._id}}

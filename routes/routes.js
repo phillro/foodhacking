@@ -29,11 +29,10 @@ module.exports = function(app){
   app.get("/card/create/:bid", indexRoutes.createCard);
   app.get('/card',apiRoutes.listCards);
   app.get('/card/:id',apiRoutes.showCard);
+  app.get('/card/:id/join', indexRoutes.joinCard);
 
 
   app.get('/restaurant/:id',apiRoutes.showRestaurant);
   app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
-
-
 
 }

@@ -24,6 +24,10 @@
       }
 
       req.session.user = user;
+      if (req.session.joining){
+        return res.redirect("/card/" + req.session.joining + "/join");
+      }
+
       res.redirect("/home");
     });
   };

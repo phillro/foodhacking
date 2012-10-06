@@ -30,6 +30,7 @@
       var parallel_arr = [];
       for (var i = 0; i < cards.length; i++) {
         var card = cards[i];
+        card.clipsRemaining = card.clipsRequired - card.clipCount;
         parallel_arr.push(getRestaurant(req, card));
       }
 
@@ -65,6 +66,7 @@
             image: "/images/free.png"
           };
         }
+        card.clipsRemaining = card.clipsRequired - card.clipCount;
         res.render("punchpage.hbs", params);
       });
     });
@@ -120,7 +122,6 @@
         res.render('punchpagesuccess', {user:user})
       })
     }
-
   }
 
   exports.createCard = function(req, res, next){
@@ -141,6 +142,24 @@
         }
         
         res.redirect("/punch/" + card.id);
+      });
+    });
+  };
+
+  exports.joinCard = function(req, res, next){
+    if (!req.session.user){
+      req.session.joining = req.params.id;
+      return res.redirect("/login");
+    }
+
+    api.internal.getCard(req, req.params.id, function(err, card){
+      if (err){
+        return next(500);
+      }
+
+      card.userIds.push(req.session.user._id);
+      card.save(function(){
+        res.redirect("/home");
       });
     });
   };
