@@ -13,6 +13,8 @@ module.exports = function(app){
   app.get('/', indexRoutes.index);
   app.get("/home", indexRoutes.home);
 
+  app.get("/punch/:card", indexRoutes.card);
+
   app.get("/login", userRoutes.login);
   app.get("/fs/callback", userRoutes.foursquareCallback);
 
@@ -28,7 +30,4 @@ module.exports = function(app){
 
   app.get('/restaurant/:id',apiRoutes.showRestaurant);
   app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
-
-
-
 }

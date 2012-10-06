@@ -13,14 +13,9 @@
       return res.redirect("/home");
     }
     req.models.Example.find({}, function (err, docs) {
-<<<<<<< HEAD
       res.render('punchpage');
     })
 };
-=======
-      res.render('index');
-    });
-  };
 
   exports.home = function(req, res, next){
     if (!req.session.user){
@@ -37,7 +32,6 @@
         var card = cards[i];
         parallel_arr.push(getRestaurant(req, card));
       }
->>>>>>> aa5d4b49df7a909b5ae34c7deb85349ae4c6da64
 
       async.parallel(parallel_arr, function(err, cards){
         var params = {
@@ -45,6 +39,22 @@
           user: req.session.user
         };
         res.render("home", params);
+      });
+    });
+  };
+
+  exports.card = function(req, res, next){
+    api.internal.getCard(req, req.params.card, function(err, card){
+      if (err){
+        return next(500);
+      }
+      getRestaurant(req, card)(function(err, card){
+        var params = {
+          user: req.session.user,
+          pageTitle: card.restaurantName,
+          card: card
+        };
+        res.render("punchpage.hbs", params);
       });
     });
   };

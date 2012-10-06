@@ -60,6 +60,15 @@ exports.internal = {
         cb(err);
       })
     .exec();
+  },
+  getCard: function(req, cardId, cb){
+    req.models.Card.findById(cardId, function (err, card) {
+      if (err) {
+        return cb(err);
+      } else {
+        return cb(false, card);
+      }
+    })
   }
 };
 
@@ -93,6 +102,7 @@ exports.clipCard = function (req, res) {
         })
       } ,
       function updateCard(card, cb) {
+        console.log("updating card");
         var clip = {};
         clip.image=imageFile;
         clip.userId=req.params.userId

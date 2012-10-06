@@ -15,7 +15,12 @@
 <body>
   <div data-role="page" class="type-home">
     <div data-role="header" data-theme="c">
-      <h1>Punchout</h1>
+      {{#if pageTitle}}
+        <a href="/" data-icon="home">Home</a>
+        <h1>{{pageTitle}}</h1>
+      {{else}}
+        <h1>Punchout</h1>
+      {{/if}}
     </div>
     <div data-role="content">
     {{{body}}}
