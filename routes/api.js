@@ -90,13 +90,13 @@ exports.clipCard = function (req, res) {
 
   var imageFile = false;
   if (req.files && req.files.photo) {
-    imageFile = req.files.photo.replace(req.imageUploadPath,'')
+    imageFile = req.files.photo.replace(req.imageUploadPath,'');
   }
   if (!imageFile) {
     out.error = "Image is required for a card clip."
   } else {
 
-    async.waterfall([
+    async.waterfall(
       function getCard(cb) {
         req.models.Card.findById(req.params.id, function (err, card) {
           cb(err, card)
