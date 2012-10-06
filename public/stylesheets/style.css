@@ -1,8 +1,9 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.checkins{
+  margin:3%;
 }
-
-a {
-  color: #00B7FF;
+.gallery img{margin:3px; max-height:100px;}
+.number{
+  font-size:18px;
+  font-weight:bold;
 }
+.submitphoto{text-align:center;}
