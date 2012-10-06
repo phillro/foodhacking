@@ -4,12 +4,6 @@
         "host":null
     },
 
-    "db":{
-        "user":"foodhack",
-        "password":"foodhack",
-        "database":"foodhack"
-    },
-
     "elasticsearch":{
         "host":"ec2-23-22-231-160.compute-1.amazonaws.com",
         "port":9200

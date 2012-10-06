@@ -43,10 +43,11 @@ exports.listCards = function (req, res) {
 }
 
 exports.internal = {
-  getCards: function(req, cb){
-    req.models.Card.find({}, cb);
+  getCards:function (req, cb) {
+    var user = req.session.user;
+    req.models.Card.find({userIds:user._id}, cb);
   },
-  getRestaurant: function(req, id, cb){
+  getRestaurant:function (req, id, cb) {
     console.log("getting restaurant", req.indexName, id);
     var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, id);
 
@@ -58,7 +59,7 @@ exports.internal = {
         console.log("error");
         cb(err);
       })
-    .exec();
+      .exec();
   }
 };
 
@@ -93,8 +94,8 @@ exports.clipCard = function (req, res) {
       } ,
       function updateCard(card, cb) {
         var clip = {};
-        clip.image=imageFile;
-        clip.userId=req.params.userId
+        clip.image = imageFile;
+        clip.userId = req.params.userId
         card.clips.push(clip);
         card.clipCount++;
         card.save(cb);
@@ -140,54 +141,19 @@ exports.nearRestaurant = function (req, res) {
   var lon = lonlatstr.split(',')[1];
   var limit = req.query.limit || 10;
   var skip = req.query.skip || 0;
-  var maxDistance = 10;
-  var query = {"bool":{"must":[
-    {"term":{"categories":"restaurants"}}
-  ]}};
-  query = {"match_all":{}}
-  var qryObj = {
-    "query":{
-      "filtered":{
-        "query":query,
-        "filter":{
-          "geo_distance":{
-            "geo":{
-              "lat":parseFloat(lat),
-              "lon":parseFloat(lon)
-            },
-            "distance":"100"
-          }
-        }
-
-      }
-    },
-    "from":skip,
-    "size":limit
-  }
-
-  var getCmd = req.elasticSearchClient.search(req.indexName, req.indexTypeName, req.params.id, qryObj)
-  getCmd.on('data', function (data) {
-    var response = JSON.parse(data);
-    if (response.error) {
-      out.error = response.error
-    } else {
-      if (response.hits && response.hits.hits) {
-        for (var i = 0; i < response.hits.hits.length; i++) {
-          var hit = response.hits.hits[i];
-          out.results.push(hit._source);
-        }
+  var geo = [parseFloat(lat),parseFloat(lon)];
+  req.models.Bounty.find({geo:{$near:geo}}, function (err, bounties) {
+    if(err){
+      out.error=err
+    }else{
+      for (var i = 0; i < bounties.length; i++) {
+        var bounty = bounties[i];
+        out.results.push(bounty.data);
       }
     }
-
     out.send();
   })
-    .on('error', function (err) {
-      out.error = err;
-      out.send();
-    })
-    .exec();
 }
-
 /*
 
  app.get('/card',apiRoutes.listCards);
