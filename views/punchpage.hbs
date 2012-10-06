@@ -14,15 +14,11 @@
   <img src="/images/test4.jpg" width="100"/>
 </div>
 
-<script>
-    function fileUploaded(){
-        document.forms["punchform"].submit();
-    }
-</script>
 
 <form id="submitPhoto" method="POST" name="punchform" enctype="multipart/form-data" action="/punch/{{card._id}}/clip/{{user._id}}">
   <div class="submitphoto">
-    <input onblur='fileUploaded()' style="display: none;" name="photo" type="file" accept="image/*" capture="camera" id="userPhoto"></input>
+    <input style="display: none;" name="photo" type="file" accept="image/*" capture="camera" id="userPhoto"></input>
+
     <input type="submit" data-role="button" value="Punch"/>
   </div>
 </form>
