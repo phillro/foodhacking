@@ -16,8 +16,6 @@ var app = module.exports = express.createServer();
 
 var nconf = require('nconf').argv().env().file({file:'./config.json'});
 
-
-
 var mongoDbConnectionString = buildDbString(nconf.get("mongo:user"),
   nconf.get("mongo:password"),
   nconf.get("mongo:host"),
@@ -25,24 +23,28 @@ var mongoDbConnectionString = buildDbString(nconf.get("mongo:user"),
   nconf.get("mongo:dbName"));
 
 var mongooseDbConnection = mongoose.createConnection(mongoDbConnectionString);
-var  MongooseLayer= require('./lib/db/index.js').MongooseLayer;
+var MongooseLayer = require('./lib/db/index.js').MongooseLayer;
 var mongooseLayer = new MongooseLayer(mongooseDbConnection);
 mongooseLayer.initModels();
 
-
 var RedisStore = require('connect-redis')(express);
-var redisClient = new Redis.createClient(nconf.get('redis:port'),nconf.get('redis:host'));
+var redisClient = new Redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 var sessionStore = new RedisStore(nconf.get('redis'));
 var session = express.session({ secret:'foodhack', store:sessionStore })
 
 var elasticSearchCilent = new ElasticSearchClient(nconf.get('elasticsearch'));
 
-
 // Configuration
 app.configure(function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'hbs');
-  app.use(express.bodyParser());
+  app.use(express.bodyParser(
+    {
+      uploadDir:__dirname + '/public/upload/',
+      keepExtensions:true
+    }
+  ));
+  app.use(express.limit('5mb'));
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(session);
@@ -66,13 +68,12 @@ app.all('*', function (req, res, next) {
   req.elasticSearchClient = elasticSearchCilent;
   req.indexName = nconf.get('indexname');
   req.indexTypeName = nconf.get('venue_type_name');
+  req.imageUploadPath = nconf.get('imageUploadPath');
 
   next()
 })
 
 new require('./routes/routes.js')(app);
-
-
 
 app.listen(nconf.get("server:port"));
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

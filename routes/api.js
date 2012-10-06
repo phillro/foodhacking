@@ -3,7 +3,9 @@
  * Date: 10/6/12
  * Time: 11:37 AM
  */
-require('async')
+var async = require('async'),
+  util = require('util'),
+  fs = require('fs');
 
 function ApiResponse(res) {
   this.results = [];
@@ -81,32 +83,46 @@ exports.showCard = function (req, res) {
 
 exports.clipCard = function (req, res) {
   var out = new ApiResponse(res)
-  async.waterfall([
-    function getCard(cb) {
-      req.models.Card.findById(req.params.id, function (err, card) {
-        cb(err, card)
-      })
-    } ,
-    function updateCard(card, cb) {
-      var clip = {};
-      card.clipCount++;
-      card.save(cb);
-    },
-    function checkCardCount(card, cb) {
-      if (card.clipCount == card.clipsRequired) {
-        //Do something cause the bounty requirement is met
-      } else {
-        cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
+
+  var imageFile = false;
+  if (req.files && req.files.file) {
+    imageFile = req.files.file.replace(req.imageUploadPath)
+  }
+  if (!imageFile) {
+    out.error = "Image is required for a card clip."
+  } else {
+
+    async.waterfall([
+      function getCard(cb) {
+        req.models.Card.findById(req.params.id, function (err, card) {
+          cb(err, card)
+        })
+      } ,
+      function updateCard(card, cb) {
+        var clip = {};
+        clip.image=imageFile;
+        clip.userId=req.params.userId
+        card.clips.push(clip);
+        card.clipCount++;
+        card.save(cb);
+      },
+      function checkCardCount(card, cb) {
+        if (card.clipCount == card.clipsRequired) {
+          //Do something cause the bounty requirement is met
+        } else {
+          cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
+        }
       }
-    }
-  ], function (waterfallError, card, msg) {
-    if (waterfallError) {
-      out.err = waterfallError
-    } else {
-      out.msg = msg
-    }
-    out.send();
-  })
+    ], function (waterfallError, card, msg) {
+      if (waterfallError) {
+        out.err = waterfallError
+      } else {
+        out.msg = msg
+      }
+      out.send();
+    })
+  }
+
 }
 
 exports.showRestaurant = function (req, res) {
@@ -137,25 +153,24 @@ exports.nearRestaurant = function (req, res) {
   ]}};
   query = {"match_all":{}}
   var qryObj = {
-        "query":{
-          "filtered":{
-            "query":query,
-            "filter":{
-              "geo_distance":{
-                "geo":{
-                  "lat":parseFloat(lat),
-                  "lon":parseFloat(lon)
-                },
-                "distance":"100"
-              }
-            }
-
+    "query":{
+      "filtered":{
+        "query":query,
+        "filter":{
+          "geo_distance":{
+            "geo":{
+              "lat":parseFloat(lat),
+              "lon":parseFloat(lon)
+            },
+            "distance":"100"
           }
+        }
+
+      }
     },
     "from":skip,
     "size":limit
   }
-
 
   var getCmd = req.elasticSearchClient.search(req.indexName, req.indexTypeName, req.params.id, qryObj)
   getCmd.on('data', function (data) {
@@ -163,7 +178,7 @@ exports.nearRestaurant = function (req, res) {
     if (response.error) {
       out.error = response.error
     } else {
-      if(response.hits&&response.hits.hits){
+      if (response.hits && response.hits.hits) {
         for (var i = 0; i < response.hits.hits.length; i++) {
           var hit = response.hits.hits[i];
           out.results.push(hit._source);

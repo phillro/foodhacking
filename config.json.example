@@ -37,5 +37,6 @@
       "key": "",
       "secret": "",
       "redirect_url": "http://localhost:3000/fs/callback"
-    }
+    },
+    imageUploadPath = __dirname + '/public/upload/'
 }
