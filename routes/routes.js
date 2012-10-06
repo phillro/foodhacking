@@ -10,15 +10,14 @@ var apiRoutes = require('./api.js');
 
 module.exports = function(app){
 
-
-
   app.get('/', indexRoutes.index);
-  app.get("/setup", userRoutes.setup);
+
+  app.get("/login", userRoutes.login);
+  app.get("/fs/callback", userRoutes.foursquareCallback);
 
 
 
   app.get('/bounties',indexRoutes.showBounties);
-
 }
 
 
