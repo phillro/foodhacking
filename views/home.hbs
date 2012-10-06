@@ -1,0 +1,16 @@
+<script src="/javascripts/home.js"></script>
+<link rel="stylesheet" href="/stylesheets/home.css" />
+
+<div class="content-primary">
+  <ul id="cards" data-role="listview">
+    <li data-role="list-divider">Your cards<span class="ui-li-count">{{cards.length}}</span></li>
+    {{#each cards}}
+      <li class="card">
+        <a href="/punch/{{_id}}">
+          <h3 class="rName">{{restaurantName}}</h2>
+          <p class="">{{description}}</p>
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+</div>

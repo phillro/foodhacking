@@ -26,33 +26,6 @@ ApiResponse.prototype.send = function () {
   this.res.send(JSON.stringify(out));
 }
 
-exports.listBounties = function (req, res) {
-  var out = new ApiResponse(res)
-  var query = req.query.filter || {}
-  req.models.Bounty.find(query, function (err, bounties) {
-    if (err) {
-      out.error = err
-    } else {
-      for (var i = 0; i < bounties.length; i++) {
-        out.results.push(bounties[i]._doc);
-      }
-    }
-    out.send();
-  })
-}
-
-exports.showBounty = function (req, res) {
-  var out = new ApiResponse(res)
-  req.models.Bounty.findById(req.params.id, function (err, bounty) {
-    if (err) {
-      out.error = err
-    } else {
-      out.results.push(bounty);
-    }
-    out.send();
-  })
-}
-
 exports.listCards = function (req, res) {
 
   var out = new ApiResponse(res)
@@ -68,6 +41,26 @@ exports.listCards = function (req, res) {
     out.send();
   })
 }
+
+exports.internal = {
+  getCards: function(req, cb){
+    req.models.Card.find({}, cb);
+  },
+  getRestaurant: function(req, id, cb){
+    console.log("getting restaurant", req.indexName, id);
+    var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, id);
+
+    getCmd.on('data', function (data) {
+      console.log("data");
+      cb(false, JSON.parse(data)._source);
+    })
+      .on('error', function (err) {
+        console.log("error");
+        cb(err);
+      })
+    .exec();
+  }
+};
 
 exports.showCard = function (req, res) {
   var out = new ApiResponse(res)
@@ -126,7 +119,7 @@ exports.clipCard = function (req, res) {
 }
 
 exports.showRestaurant = function (req, res) {
-  var out = new ApiResponse(res)
+  var out = new ApiResponse(res);
 
   var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)
   getCmd.on('data', function (data) {
