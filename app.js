@@ -63,14 +63,24 @@ app.configure('production', function () {
 // Routes
 
 app.all('*', function (req, res, next) {
+
   req.redisClient = redisClient;
   req.models = mongooseLayer.models;
   req.elasticSearchClient = elasticSearchCilent;
   req.indexName = nconf.get('indexname');
   req.indexTypeName = nconf.get('venue_type_name');
   req.imageUploadPath = nconf.get('imageUploadPath');
+  if (req.session.user) {
+    req.models.User.findById(req.session.user._id,function(err,user){
+      if(user){
+        req.session.user=user
+      }
+      next();
+    })
+  } else {
+    next()
+  }
 
-  next()
 })
 
 new require('./routes/routes.js')(app);
