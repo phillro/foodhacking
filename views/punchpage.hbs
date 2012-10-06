@@ -1,17 +1,23 @@
 <script type="text/javascript" src="/javascripts/punchpage.js"></script>
 <h3>Photos</h3>
 <div class="gallery">
-  <p>You need {{card.clipsRequired - card.clipCount}} more punches</p>
+  {{#if punched}}
+    <p>You need {{card.clipsRequired - card.clipCount}} more punches</p>
+  {{else}}
+    <p>Thanks for punching in, you need {{card.clipsRequired - card.clipCount}} more punches</p>
+  {{/if}}
   {{#each card.clips}}
     <img src="{{image}}" width="100" />
   {{/each}}
 </div>
 
 
-<form id="submitPhoto" method="POST" name="punchform" enctype="multipart/form-data" action="/punch/{{card._id}}/clip/{{user._id}}">
-  <div class="submitphoto">
-    <input name="photo" type="file" accept="image/*" capture="camera" id="userPhoto"></input>
+{{#unless punched}}
+  <form id="submitPhoto" method="POST" name="punchform" enctype="multipart/form-data" action="/punch/{{card._id}}/clip/{{user._id}}">
+    <div class="submitphoto">
+      <input name="photo" type="file" accept="image/*" capture="camera" id="userPhoto"></input>
 
-    <input type="submit" data-role="button" value="Punch"/>
-  </div>
-</form>
+      <input type="submit" data-role="button" value="Punch"/>
+    </div>
+  </form>
+{{/unless}}
