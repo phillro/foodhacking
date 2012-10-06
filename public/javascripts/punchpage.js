@@ -1,3 +1,4 @@
+/*
 $(document).ready(function(){
   $('#submitPhoto').submit(function(e){
     if(!$("#userPhoto").val()){
@@ -5,4 +6,5 @@ $(document).ready(function(){
       $("#userPhoto").trigger('click');  
     }  
   });
-});
+});*/
+
