@@ -1,9 +1,13 @@
 .checkins{
   margin:3%;
 }
-.gallery img{margin:3px; max-height:100px;}
+.gallery img{margin:3px; max-height:300px;}
+.galleryConfirm {text-align:center;}
+.galleryConfirm img{width:90%;}
 .number{
   font-size:18px;
   font-weight:bold;
 }
 .submitphoto{text-align:center;}
+.hd{display:none;}
+a{text-decoration:none;}
