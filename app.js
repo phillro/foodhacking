@@ -71,7 +71,7 @@ new require('./routes/routes.js')(app);
 
 
 
-app.listen(4000);
+app.listen(nconf.get("server:port"));
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 function buildDbString(user, pass, host, port, dbName) {
