@@ -1,7 +1,8 @@
 (function () {
   "use strict";
   var api = require("./api.js"),
-    async = require("async");
+    async = require("async"),
+    _ = require('underscore');
 
   var getRestaurant;
   /*
@@ -73,7 +74,7 @@
   };
 
   exports.clipCard = function (req, res) {
-    var out = new ApiResponse(res)
+
 
     var imageFile = false;
     if (req.files && req.files.photo) {
@@ -96,30 +97,30 @@
           clip.userId = req.params.userId
           card.clips.push(clip);
           card.clipCount++;
-          card.save(cb);
+          card.save(function(err,saveResult){
+            cb(err, saveResult)
+          });
         },
-        function checkCardCount(card, cb) {
-          if (card.clipCount == card.clipsRequired) {
-            //Do something cause the bounty requirement is met
-          } else {
-            cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
-          }
-        },
-        function updateUser(card, cb) {
+        function updateUser(card, callback) {
           var user = req.session.user;
-          if (!_.isNUmber(user.points)) {
+          if (!_.isNumber(user.points)) {
             user.points = 0;
           }
-          user.points += 5;
+          user.points = user.points+ 5;
           user.save(function (err, userResult) {
-            cb(err, userResult, card)
+            callback(err, userResult, card)
           })
         }
-      ], function (waterfallError, user, cart) {
+      ], function (waterfallError, user, card) {
         if (waterfallError) {
           console.log(waterfallError)
+        }else{
+          var punched=false;
+          if(card.clipCount==card.clipsRequired){
+            punched=true;
+          }
         }
-        res.render('punchpagesuccess', {user:user})
+        res.render('punchpagesuccess', {user:user, card:card, punched:punched})
       })
     }
   }
