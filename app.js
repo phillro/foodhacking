@@ -67,7 +67,9 @@ app.all('*', function (req, res, next) {
   next()
 })
 
-app.get('/', routes.index);
+new require('./routes/routes.js')(app);
+
+
 
 app.listen(4000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
