@@ -1,17 +1,10 @@
 <script type="text/javascript" src="/javascripts/punchpage.js"></script>
-<p class="checkins">
-  <span class="number">12</span> punchins&#33;
-</p>
 <h3>Photos</h3>
 <div class="gallery">
-  <img src="/images/test.jpg"   width="100"/>
-  <img src="/images/test4.jpg" width="100"/>
-  <img src="/images/test2.jpg" width="100"/>
-  <img src="/images/test.jpg" width="100"/>
-  <img src="/images/test3.jpg" width="100"/>
-  <img src="/images/test.jpg" width="100"/>
-  <img src="/images/test2.jpg" width="100"/>
-  <img src="/images/test4.jpg" width="100"/>
+  <p>You need {{card.clipsRequired - card.clipCount}} more punches</p>
+  {{#each card.clips}}
+    <img src="{{image}}" width="100" />
+  {{/each}}
 </div>
 
 <script>

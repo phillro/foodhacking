@@ -26,7 +26,7 @@ module.exports = function(app){
   app.get('/bounties/:bid',apiRoutes.showBounty);
 
 
-  app.get("/card/create/:bid", index.createCard);
+  app.get("/card/create/:bid", indexRoutes.createCard);
   app.get('/card',apiRoutes.listCards);
   app.get('/card/:id',apiRoutes.showCard);
 

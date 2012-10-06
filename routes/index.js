@@ -54,6 +54,16 @@
           pageTitle:card.restaurantName,
           card:card
         };
+        for (var i = 0; i < (card.clipsRequired - card.clipCount) - 1; i++){
+          card.clips.push({
+            image: "/images/punch.png"
+          });
+        }
+        if (card.clipsRequired !== card.clipCount){
+          card.clips[9] = {
+            image: "/images/free.png"
+          };
+        }
         res.render("punchpage.hbs", params);
       });
     });
@@ -111,6 +121,28 @@
     }
 
   }
+
+  exports.createCard = function(req, res, next){
+    api.internal.getBounty(req, req.params.bid, function(err, bounty){
+      var card = new req.models.Card({
+        userIds: [req.session.user._id],
+        bountyId: req.params.bid,
+        clips: [],
+        rid: bounty.rid,
+        description: bounty.description
+      });
+      console.log("saving", card);
+      card.save(function(err, card){
+        console.log("saved");
+        if (err){
+          console.error(err);
+          return next(500);
+        }
+        
+        res.redirect("/punch/" + card.id);
+      });
+    });
+  };
 
   getRestaurant = function (req, card) {
     return function (cb) {
