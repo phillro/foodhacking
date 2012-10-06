@@ -106,10 +106,10 @@
           if (!_.isNumber(user.points)) {
             user.points = 0;
           }
-          user.points = user.points+ 5;
+          user.points = user.points + 5;
           user.save(function (err, userResult) {
             callback(err, userResult, card)
-          })
+          });
         }
       ], function (waterfallError, user, card) {
         if (waterfallError) {
@@ -119,8 +119,19 @@
           if(card.clipCount==card.clipsRequired){
             punched=true;
           }
-        }
-        res.render('punchpagesuccess', {user:user, card:card, punched:punched})
+          for (var i = 0; i < (card.clipsRequired - card.clipCount) - 1; i++){
+            card.clips.push({
+              image: "/images/punch.png"
+            });
+          }
+          if (card.clipsRequired !== card.clipCount){
+            card.clips[9] = {
+              image: "/images/free.png"
+            };
+          }
+          card.clipsRemaining = card.clipsRequired - card.clipCount;
+          }
+          res.render('punchpage', {user:user, card:card, punched:punched})
       })
     }
   }
