@@ -7,6 +7,7 @@
 var indexRoutes = require('./index.js');
 var userRoutes  = require("./user.js");
 var apiRoutes = require('./api.js');
+var adminRoutes = require('./admin.js');
 
 module.exports = function(app){
 
@@ -30,4 +31,7 @@ module.exports = function(app){
 
   app.get('/restaurant/:id',apiRoutes.showRestaurant);
   app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
+
+  app.get('/admin/:latlon',adminRoutes.list);
+
 }

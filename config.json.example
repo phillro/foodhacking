@@ -4,12 +4,6 @@
         "host":null
     },
 
-    "db":{
-        "user":"foodhack",
-        "password":"foodhack",
-        "database":"foodhack"
-    },
-
     "elasticsearch":{
         "host":"ec2-23-22-231-160.compute-1.amazonaws.com",
         "port":9200
@@ -38,5 +32,5 @@
       "secret": "",
       "redirect_url": "http://localhost:3000/fs/callback"
     },
-    imageUploadPath = __dirname + '/public/upload/'
+    imageUploadPath : __dirname + '/public/upload/'
 }
