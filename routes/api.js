@@ -3,7 +3,9 @@
  * Date: 10/6/12
  * Time: 11:37 AM
  */
-require('async')
+var async = require('async'),
+  util = require('util'),
+  fs = require('fs');
 
 function ApiResponse(res) {
   this.results = [];
@@ -24,33 +26,6 @@ ApiResponse.prototype.send = function () {
   this.res.send(JSON.stringify(out));
 }
 
-exports.listBounties = function (req, res) {
-  var out = new ApiResponse(res)
-  var query = req.query.filter || {}
-  req.models.Bounty.find(query, function (err, bounties) {
-    if (err) {
-      out.error = err
-    } else {
-      for (var i = 0; i < bounties.length; i++) {
-        out.results.push(bounties[i]._doc);
-      }
-    }
-    out.send();
-  })
-}
-
-exports.showBounty = function (req, res) {
-  var out = new ApiResponse(res)
-  req.models.Bounty.findById(req.params.id, function (err, bounty) {
-    if (err) {
-      out.error = err
-    } else {
-      out.results.push(bounty);
-    }
-    out.send();
-  })
-}
-
 exports.listCards = function (req, res) {
 
   var out = new ApiResponse(res)
@@ -67,6 +42,26 @@ exports.listCards = function (req, res) {
   })
 }
 
+exports.internal = {
+  getCards: function(req, cb){
+    req.models.Card.find({}, cb);
+  },
+  getRestaurant: function(req, id, cb){
+    console.log("getting restaurant", req.indexName, id);
+    var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, id);
+
+    getCmd.on('data', function (data) {
+      console.log("data");
+      cb(false, JSON.parse(data)._source);
+    })
+      .on('error', function (err) {
+        console.log("error");
+        cb(err);
+      })
+    .exec();
+  }
+};
+
 exports.showCard = function (req, res) {
   var out = new ApiResponse(res)
   req.models.Card.findById(req.params.id, function (err, card) {
@@ -81,36 +76,50 @@ exports.showCard = function (req, res) {
 
 exports.clipCard = function (req, res) {
   var out = new ApiResponse(res)
-  async.waterfall([
-    function getCard(cb) {
-      req.models.Card.findById(req.params.id, function (err, card) {
-        cb(err, card)
-      })
-    } ,
-    function updateCard(card, cb) {
-      var clip = {};
-      card.clipCount++;
-      card.save(cb);
-    },
-    function checkCardCount(card, cb) {
-      if (card.clipCount == card.clipsRequired) {
-        //Do something cause the bounty requirement is met
-      } else {
-        cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
+
+  var imageFile = false;
+  if (req.files && req.files.file) {
+    imageFile = req.files.file.replace(req.imageUploadPath)
+  }
+  if (!imageFile) {
+    out.error = "Image is required for a card clip."
+  } else {
+
+    async.waterfall([
+      function getCard(cb) {
+        req.models.Card.findById(req.params.id, function (err, card) {
+          cb(err, card)
+        })
+      } ,
+      function updateCard(card, cb) {
+        var clip = {};
+        clip.image=imageFile;
+        clip.userId=req.params.userId
+        card.clips.push(clip);
+        card.clipCount++;
+        card.save(cb);
+      },
+      function checkCardCount(card, cb) {
+        if (card.clipCount == card.clipsRequired) {
+          //Do something cause the bounty requirement is met
+        } else {
+          cb(undefined, card, card.clipsRequired - card.clipCount + ' clips left to go!')
+        }
       }
-    }
-  ], function (waterfallError, card, msg) {
-    if (waterfallError) {
-      out.err = waterfallError
-    } else {
-      out.msg = msg
-    }
-    out.send();
-  })
+    ], function (waterfallError, card, msg) {
+      if (waterfallError) {
+        out.err = waterfallError
+      } else {
+        out.msg = msg
+      }
+      out.send();
+    })
+  }
+
 }
 
 exports.showRestaurant = function (req, res) {
-  var out = new ApiResponse(res)
+  var out = new ApiResponse(res);
 
   var getCmd = req.elasticSearchClient.get(req.indexName, req.indexTypeName, req.params.id)
   getCmd.on('data', function (data) {
@@ -137,25 +146,24 @@ exports.nearRestaurant = function (req, res) {
   ]}};
   query = {"match_all":{}}
   var qryObj = {
-        "query":{
-          "filtered":{
-            "query":query,
-            "filter":{
-              "geo_distance":{
-                "geo":{
-                  "lat":parseFloat(lat),
-                  "lon":parseFloat(lon)
-                },
-                "distance":"100"
-              }
-            }
-
+    "query":{
+      "filtered":{
+        "query":query,
+        "filter":{
+          "geo_distance":{
+            "geo":{
+              "lat":parseFloat(lat),
+              "lon":parseFloat(lon)
+            },
+            "distance":"100"
           }
+        }
+
+      }
     },
     "from":skip,
     "size":limit
   }
-
 
   var getCmd = req.elasticSearchClient.search(req.indexName, req.indexTypeName, req.params.id, qryObj)
   getCmd.on('data', function (data) {
@@ -163,7 +171,7 @@ exports.nearRestaurant = function (req, res) {
     if (response.error) {
       out.error = response.error
     } else {
-      if(response.hits&&response.hits.hits){
+      if (response.hits && response.hits.hits) {
         for (var i = 0; i < response.hits.hits.length; i++) {
           var hit = response.hits.hits[i];
           out.results.push(hit._source);
