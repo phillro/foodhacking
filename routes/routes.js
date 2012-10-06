@@ -25,6 +25,11 @@ module.exports = function(app){
   app.get('/card/:id',apiRoutes.showCard);
   app.post('/card/:id/clip/:userId',apiRoutes.clipCard);
 
+
+  app.get('/restaurant/:id',apiRoutes.showRestaurant);
+  app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
+  app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
+
 }
 
 

@@ -11,11 +11,11 @@
     },
 
     "elasticsearch":{
-        "host":"elastics.ordr.in",
+        "host":"ec2-23-22-231-160.compute-1.amazonaws.com",
         "port":9200
     },
-    "indexname":"foodhack",
-    "venue_type_name":"foodhack_venue",
+    "indexname":"skyfetch4",
+    "venue_type_name":"location",
 
     "mongo":{
         "user":"foodhack",
