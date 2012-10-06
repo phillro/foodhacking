@@ -27,8 +27,8 @@
   };
 
   showRestaurants = function(data){
-    data = JSON.parse(data).results;
-    console.log(data[0]);
+    data = JSON.parse(data);
+    console.log(data);
   };
 
 }());
