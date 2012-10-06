@@ -5,6 +5,7 @@
  */
 
 var indexRoutes = require('./index.js');
+var userRoutes  = require("./user.js");
 var apiRoutes = require('./api.js');
 
 module.exports = function(app){
@@ -12,6 +13,7 @@ module.exports = function(app){
 
 
   app.get('/', indexRoutes.index);
+  app.get("/setup", userRoutes.setup);
 
 
 
