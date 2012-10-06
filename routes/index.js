@@ -14,7 +14,7 @@
       return res.redirect("/home");
     }
     req.models.Example.find({}, function (err, docs) {
-      res.render('punchpage');
+      res.render('index');
     })
   };
 
@@ -198,6 +198,10 @@
         res.redirect("/home");
       });
     });
+  };
+
+  exports.share = function(req, res, next){
+
   };
 
   getRestaurant = function (req, card) {
