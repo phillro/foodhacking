@@ -1,6 +1,4 @@
-.checkins{
-  margin:3%;
-}
+.checkins{margin:3%;}
 .gallery img{margin:3px; max-height:300px;}
 .galleryConfirm {text-align:center;}
 .galleryConfirm img{width:90%;}
@@ -11,3 +9,4 @@
 .submitphoto{text-align:center;}
 .hd{display:none;}
 a{text-decoration:none;}
+.dataTable{width:80%; text-align:center; margin-top:10px;}
