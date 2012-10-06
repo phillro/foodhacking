@@ -126,7 +126,7 @@ exports.nearRestaurant = function (req, res) {
       }else{
         for (var i = 0; i < bounties.length; i++) {
           //var bounty = bounties[i];
-          console.log("checking", String(bounties[i]._doc._id);
+          console.log("checking", String(bounties[i]._doc._id));
           if (!_.contains(bountyIds, String(bounties[i]._doc._id))){
             out.results.push(bounties[i]._doc);
           }

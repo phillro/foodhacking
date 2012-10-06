@@ -78,7 +78,7 @@
 
     var imageFile = false;
     if (req.files && req.files.photo) {
-      imageFile = '/public/upload/' + req.files.photo.path.replace(/^.*[\\\/]/, '');
+      imageFile = '/upload/' + req.files.photo.path.replace(/^.*[\\\/]/, '');
     }
     if (!imageFile) {
       out.error = "Image is required for a card clip."
@@ -116,8 +116,10 @@
           console.log(waterfallError)
         }else{
           var punched=false;
-          if(card.clipCount==card.clipsRequired){
-            punched=true;
+          if(card.clipCount>=card.clipsRequired){
+            res.redirect('/punch/'+card._id+'/success');
+          }else{
+            res.render('punchpages', {user:user, card:card, punched:true});
           }
           for (var i = 0; i < (card.clipsRequired - card.clipCount) - 1; i++){
             card.clips.push({
@@ -130,10 +132,23 @@
             };
           }
           card.clipsRemaining = card.clipsRequired - card.clipCount;
-          }
           res.render('punchpage', {user:user, card:card, punched:punched})
+        }
       })
     }
+  }
+
+  exports.clipCardSucess = function(req, res){
+    api.internal.getCard(req, req.params.card, function (err, card) {
+      if(card){
+        req.models.Bounty.findById(card.bountyId,function(err,bounty){
+          res.render('punchpagesuccess', {user:req.session.user, card:card, punched:true,bounty:bounty});
+        })
+      }else{
+        res.send(500,{msg:'you suck', error:err});
+      }
+
+    })
   }
 
   exports.createCard = function(req, res, next){

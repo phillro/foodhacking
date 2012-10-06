@@ -16,6 +16,7 @@ module.exports = function(app){
 
   app.get("/punch/:card", indexRoutes.card);
   app.post('/punch/:id/clip/:userId',indexRoutes.clipCard);
+  app.get('/punch/:card/success',indexRoutes.clipCardSucess);
 
   app.get("/login", userRoutes.login);
   app.get("/fs/callback", userRoutes.foursquareCallback);
