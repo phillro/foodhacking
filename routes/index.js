@@ -13,6 +13,11 @@
       return res.redirect("/home");
     }
     req.models.Example.find({}, function (err, docs) {
+<<<<<<< HEAD
+      res.render('punchpage');
+    })
+};
+=======
       res.render('index');
     });
   };
@@ -32,6 +37,7 @@
         var card = cards[i];
         parallel_arr.push(getRestaurant(req, card));
       }
+>>>>>>> aa5d4b49df7a909b5ae34c7deb85349ae4c6da64
 
       async.parallel(parallel_arr, function(err, cards){
         var params = {

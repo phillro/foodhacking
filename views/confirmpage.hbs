@@ -8,27 +8,15 @@
 <h1 class="ui-title" role="heading" aria-level="1">Card name</h1>
 </div>
 <p class="checkins">
-<span class="number">12</span> checkins!
+ You are goint to submit this photo!
 </p>
 <h3>Photos</h3>
-<div class="gallery">
-  <img src="/images/test.jpg"   width="100"/>
-  <img src="/images/test4.jpg" width="100"/>
-  <img src="/images/test2.jpg" width="100"/>
-  <img src="/images/test.jpg" width="100"/>
-  <img src="/images/test3.jpg" width="100"/>
-  <img src="/images/test.jpg" width="100"/>
-  <img src="/images/test2.jpg" width="100"/>
-  <img src="/images/test4.jpg" width="100"/>
+<div class="galleryConfirm">
+  <img src="/images/test.jpg"/>
 </div>
-  <form id="submitPhoto" method="POST" action="/wherever">
+  <form id="confirmPhoto" method="POST" action="/wherever">
   <div class="submitphoto">
-    <div class=""><input type="file" accept="image/*" capture="camera" id="userPhoto"></input></div>  
-    <input type="submit" data-role="button" value="Add Photo"/>
+    <input type="hidden" value="tmp/sdkjdsfl"></input>  
+    <input type="submit" data-role="button" value="Punch in!"/>
   </div>
-  </form>
-<h3>Friends</h3>
-<ul>
-  <li>Second user in card</li>
-  <li>Third user in card</li>
-</p>
+</form>
