@@ -27,7 +27,9 @@ module.exports = function(app){
 
 
   app.get('/restaurant/:id',apiRoutes.showRestaurant);
-  app.get('/restaurant/:lat/:lon',apiRoutes.nearRestaurant);
+  app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
+  app.get('/restaurants/:latlon',apiRoutes.nearRestaurant);
+
 }
 
 

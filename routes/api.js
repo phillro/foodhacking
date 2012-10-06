@@ -8,13 +8,14 @@ require('async')
 function ApiResponse(res) {
   this.results = [];
   this.res = res;
+  this.error = false;
 }
 
 ApiResponse.prototype.send = function () {
   var out = {}
-  out.success = this.error ? false : true;
+  out.success = this.error ? 'false' : 'true';
   if (this.error) {
-    out.errror = this.error
+    out.error = this.error
     out.responseCode = 400
   } else {
     out.responseCode = 200
@@ -125,60 +126,55 @@ exports.showRestaurant = function (req, res) {
 
 exports.nearRestaurant = function (req, res) {
   var out = new ApiResponse(res)
-  var lat = req.params.lat;
-  var lon = req.params.lon;
+  var lonlatstr = req.params.latlon;
+  var lat = lonlatstr.split(',')[0];
+  var lon = lonlatstr.split(',')[1];
   var limit = req.query.limit || 10;
   var skip = req.query.skip || 0;
-  var maxDistance = 100;
+  var maxDistance = 10;
+  var query = {"bool":{"must":[
+    {"term":{"categories":"restaurants"}}
+  ]}};
+  query = {"match_all":{}}
   var qryObj = {
-    "query":{
-      "custom_score":{
         "query":{
           "filtered":{
-            "query":{},
+            "query":query,
             "filter":{
               "geo_distance":{
                 "geo":{
-                  "lat":lonlatstr.split(',')[1],
-                  "lon":lonlatstr.split(',')[0]
+                  "lat":parseFloat(lat),
+                  "lon":parseFloat(lon)
                 },
-                "distance":maxDistance
+                "distance":"100"
               }
             }
 
           }
-        },
-        "params":{
-          "lat":lat,
-          "lon":lon,
-          "maxDistance":parseFloat(distance),
-          "distanceWeight":1,
-          "scoreWeight":0
-
-        },
-        "script":'(1-(doc["geo"].distanceInKm(lat,lon)/maxDistance))*distanceWeight+scoreWeight*_score'
-      }
-    },
-    "script_fields":{
-      "distance":{
-        "params":{
-          "lat":lat,
-          "lon":lon
-        },
-        "script":'doc["geo"].distanceInKm(lat,lon)'
-      }
     },
     "from":skip,
     "size":limit
   }
 
+
   var getCmd = req.elasticSearchClient.search(req.indexName, req.indexTypeName, req.params.id, qryObj)
   getCmd.on('data', function (data) {
-    out.results.push(JSON.parse(data)._source);
+    var response = JSON.parse(data);
+    if (response.error) {
+      out.error = response.error
+    } else {
+      if(response.hits&&response.hits.hits){
+        for (var i = 0; i < response.hits.hits.length; i++) {
+          var hit = response.hits.hits[i];
+          out.results.push(hit._source);
+        }
+      }
+    }
+
     out.send();
   })
     .on('error', function (err) {
-      out.err = err;
+      out.error = err;
       out.send();
     })
     .exec();
