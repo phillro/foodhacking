@@ -17,13 +17,8 @@
 
 <form id="submitPhoto" method="POST" name="punchform" enctype="multipart/form-data" action="/punch/{{card._id}}/clip/{{user._id}}">
   <div class="submitphoto">
-    <input style="display: none;" name="photo" type="file" accept="image/*" capture="camera" id="userPhoto"></input>
+    <input name="photo" type="file" accept="image/*" capture="camera" id="userPhoto"></input>
 
     <input type="submit" data-role="button" value="Punch"/>
   </div>
 </form>
-<h3>Friends</h3>
-<ul>
-  <li>Second user in card</li>
-  <li>Third user in card</li>
-</p>
