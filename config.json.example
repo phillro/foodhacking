@@ -5,27 +5,17 @@
     },
 
     "elasticsearch":{
-        "host":"ec2-23-22-231-160.compute-1.amazonaws.com",
-        "port":9200
     },
     "indexname":"skyfetch4",
     "venue_type_name":"location",
 
     "mongo":{
-        "user":"foodhack",
-        "password":"foodhack",
-        "dbName":"foodhack",
-        "port":27017,
-        "host":"ec2-23-20-56-175.compute-1.amazonaws.com",
-        "model_collection_mapping":{
+     
         }
     },
 
     "redis":{
-      "port":6379,
-      "host":"ec2-23-20-56-175.compute-1.amazonaws.com",
-      "db":"foodhack",
-      "debug":true
+     
     }
     "foursquare": {
       "key": "",
